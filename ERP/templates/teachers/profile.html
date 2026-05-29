@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Profile - ERP System{% endblock %}
+
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .profile-header {
+        background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .profile-header-content h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+    }
+    .profile-header-content p {
+        margin: 0;
+        opacity: 0.95;
+    }
+    .btn {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-edit {
+        background: white;
+        color: #f39c12;
+    }
+    .btn-edit:hover {
+        background: #ecf0f1;
+    }
+    .profile-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .profile-card h2 {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    .info-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .info-row.triple {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    .info-row.full {
+        grid-template-columns: 1fr;
+    }
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .info-label {
+        font-weight: 600;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    .info-value {
+        color: #2c3e50;
+        font-size: 1rem;
+    }
+    .document-link {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .document-link:hover {
+        text-decoration: underline;
+    }
+    .empty-value {
+        color: #bdc3c7;
+        font-style: italic;
+    }
+    @media (max-width: 768px) {
+        .info-row,
+        .info-row.triple {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-header-content">
+            <h1>👨‍🏫 {{ teacher.user.get_full_name }}</h1>
+            <p>{{ teacher.designation }} • {{ teacher.department }}</p>
+        </div>
+        <a href="{% url 'teacher-profile-edit' %}" class="btn btn-edit">Edit Profile</a>
+    </div>
+
+    <!-- Employment Information -->
+    <div class="profile-card">
+        <h2>💼 Employment Information</h2>
+        
+        <div class="info-row triple">
+            <div class="info-item">
+                <span class="info-label">Employee ID</span>
+                <span class="info-value">{{ teacher.employee_id }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Department</span>
+                <span class="info-value">{{ teacher.department }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Designation</span>
+                <span class="info-value">{{ teacher.designation }}</span>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-item">
+                <span class="info-label">Joining Date</span>
+                <span class="info-value">{{ teacher.joining_date|date:"M d, Y" }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Date of Birth</span>
+                <span class="info-value">{{ teacher.date_of_birth|date:"M d, Y"|default:"N/A" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Qualifications -->
+    <div class="profile-card">
+        <h2>🎓 Qualifications</h2>
+        
+        <div class="info-row">
+            <div class="info-item">
+                <span class="info-label">Highest Qualification</span>
+                <span class="info-value">{{ teacher.get_qualification_display }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Years of Experience</span>
+                <span class="info-value">{{ teacher.experience_years }} years</span>
+            </div>
+        </div>
+
+        {% if teacher.specialization %}
+        <div class="info-row full">
+            <div class="info-item">
+                <span class="info-label">Specialization/Expertise</span>
+                <span class="info-value">{{ teacher.specialization }}</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Financial Information -->
+    <div class="profile-card">
+        <h2>💰 Financial Information</h2>
+        
+        <div class="info-row">
+            {% if teacher.bank_account_number %}
+            <div class="info-item">
+                <span class="info-label">Bank Account</span>
+                <span class="info-value">***{{ teacher.bank_account_number|slice:"-4:" }}</span>
+            </div>
+            {% endif %}
+            {% if teacher.bank_name %}
+            <div class="info-item">
+                <span class="info-label">Bank Name</span>
+                <span class="info-value">{{ teacher.bank_name }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        {% if teacher.pan_number %}
+        <div class="info-row full">
+            <div class="info-item">
+                <span class="info-label">PAN Number</span>
+                <span class="info-value">{{ teacher.pan_number }}</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Teaching Statistics -->
+    <div class="profile-card">
+        <h2>📊 Teaching Statistics</h2>
+        
+        <div class="info-row triple">
+            <div class="info-item">
+                <span class="info-label">Total Courses</span>
+                <span class="info-value">{{ teacher.total_courses }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Total Students</span>
+                <span class="info-value">{{ teacher.total_students }}</span>
+            </div>
+            {% if teacher.performance_rating %}
+            <div class="info-item">
+                <span class="info-label">Performance Rating</span>
+                <span class="info-value">{{ teacher.performance_rating }}/5.0 ⭐</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="profile-card">
+        <h2>📄 Uploaded Documents</h2>
+        
+        {% if teacher.degree_certificate or teacher.identity_proof or teacher.teaching_license or teacher.experience_certificate or teacher.research_publications %}
+            <div class="info-row triple">
+                {% if teacher.degree_certificate %}
+                <div class="info-item">
+                    <span class="info-label">Degree Certificate</span>
+                    <a href="{{ teacher.degree_certificate.url }}" class="document-link" target="_blank">📥 Download</a>
+                </div>
+                {% endif %}
+                {% if teacher.identity_proof %}
+                <div class="info-item">
+                    <span class="info-label">Identity Proof</span>
+                    <a href="{{ teacher.identity_proof.url }}" class="document-link" target="_blank">📥 Download</a>
+                </div>
+                {% endif %}
+                {% if teacher.teaching_license %}
+                <div class="info-item">
+                    <span class="info-label">Teaching License</span>
+                    <a href="{{ teacher.teaching_license.url }}" class="document-link" target="_blank">📥 Download</a>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="info-row" style="margin-top: 1rem;">
+                {% if teacher.experience_certificate %}
+                <div class="info-item">
+                    <span class="info-label">Experience Certificate</span>
+                    <a href="{{ teacher.experience_certificate.url }}" class="document-link" target="_blank">📥 Download</a>
+                </div>
+                {% endif %}
+                {% if teacher.research_publications %}
+                <div class="info-item">
+                    <span class="info-label">Research Publications</span>
+                    <a href="{{ teacher.research_publications.url }}" class="document-link" target="_blank">📥 Download</a>
+                </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <p class="empty-value">No documents uploaded yet</p>
+        {% endif %}
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+        <a href="{% url 'teacher-profile-edit' %}" class="btn btn-edit" style="background: #f39c12; color: white; flex: 1;">Edit Profile</a>
+        <a href="{% url 'teacher-dashboard' %}" class="btn btn-edit" style="background: #ecf0f1; color: #2c3e50; flex: 1;">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

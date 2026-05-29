@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+
+{% block title %}Organization Profile - ERP System{% endblock %}
+
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .profile-header {
+        background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .profile-header-content h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+    }
+    .profile-header-content p {
+        margin: 0;
+        opacity: 0.95;
+    }
+    .profile-actions {
+        display: flex;
+        gap: 1rem;
+    }
+    .btn {
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+    .btn-edit {
+        background: white;
+        color: #9b59b6;
+    }
+    .btn-edit:hover {
+        background: #ecf0f1;
+    }
+    .profile-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .profile-card h2 {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    .info-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .info-row.full {
+        grid-template-columns: 1fr;
+    }
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .info-label {
+        font-weight: 600;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+    .info-value {
+        color: #2c3e50;
+        font-size: 1rem;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    .stat-card {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 6px;
+        text-align: center;
+    }
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #9b59b6;
+    }
+    .stat-label {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
+    @media (max-width: 768px) {
+        .profile-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .info-row {
+            grid-template-columns: 1fr;
+        }
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+        .profile-actions {
+            width: 100%;
+        }
+        .btn {
+            flex: 1;
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-header-content">
+            <h1>🏢 {{ organization.organization_name }}</h1>
+            <p>Organization Profile</p>
+        </div>
+        <div class="profile-actions">
+            <a href="{% url 'organization-profile' %}" class="btn btn-edit">Edit Profile</a>
+            {% if user.is_superuser %}
+                <a href="{% url 'admin:organizations_organization_change' organization.id %}" class="btn btn-edit">Admin</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Basic Information -->
+    <div class="profile-card">
+        <h2>📋 Basic Information</h2>
+        
+        <div class="info-row">
+            <div class="info-item">
+                <span class="info-label">Organization Name</span>
+                <span class="info-value">{{ organization.organization_name }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Registration Number</span>
+                <span class="info-value">{{ organization.registration_number }}</span>
+            </div>
+        </div>
+
+        <div class="info-row">
+            <div class="info-item">
+                <span class="info-label">Website</span>
+                <span class="info-value">
+                    {% if organization.website %}
+                        <a href="{{ organization.website }}" target="_blank">{{ organization.website }}</a>
+                    {% else %}
+                        <em>Not provided</em>
+                    {% endif %}
+                </span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Establishment Year</span>
+                <span class="info-value">{{ organization.establishment_year|default:"N/A" }}</span>
+            </div>
+        </div>
+
+        {% if organization.description %}
+        <div class="info-row full">
+            <div class="info-item">
+                <span class="info-label">Description</span>
+                <span class="info-value">{{ organization.description }}</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Principal/Director Information -->
+    <div class="profile-card">
+        <h2>👔 Principal/Director Information</h2>
+        
+        {% if organization.principal_name or organization.principal_email or organization.principal_phone %}
+            <div class="info-row">
+                {% if organization.principal_name %}
+                <div class="info-item">
+                    <span class="info-label">Principal/Director Name</span>
+                    <span class="info-value">{{ organization.principal_name }}</span>
+                </div>
+                {% endif %}
+                {% if organization.principal_email %}
+                <div class="info-item">
+                    <span class="info-label">Principal Email</span>
+                    <span class="info-value"><a href="mailto:{{ organization.principal_email }}">{{ organization.principal_email }}</a></span>
+                </div>
+                {% endif %}
+            </div>
+            {% if organization.principal_phone %}
+            <div class="info-row full">
+                <div class="info-item">
+                    <span class="info-label">Principal Phone</span>
+                    <span class="info-value"><a href="tel:{{ organization.principal_phone }}">{{ organization.principal_phone }}</a></span>
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+            <p style="color: #bdc3c7; font-style: italic;">Not provided</p>
+        {% endif %}
+    </div>
+
+    <!-- Contact Information -->
+    <div class="profile-card">
+        <h2>📞 Contact Information</h2>
+        
+        <div class="info-row">
+            <div class="info-item">
+                <span class="info-label">Contact Email</span>
+                <span class="info-value"><a href="mailto:{{ organization.contact_email }}">{{ organization.contact_email }}</a></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Contact Phone</span>
+                <span class="info-value"><a href="tel:{{ organization.contact_phone }}">{{ organization.contact_phone }}</a></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Organization Details -->
+    <div class="profile-card">
+        <h2>📊 Organization Details</h2>
+        
+        <div class="info-row">
+            {% if organization.accreditation_type %}
+            <div class="info-item">
+                <span class="info-label">Accreditation Type</span>
+                <span class="info-value">{{ organization.get_accreditation_type_display }}</span>
+            </div>
+            {% endif %}
+            {% if organization.accreditation_number %}
+            <div class="info-item">
+                <span class="info-label">Accreditation Number</span>
+                <span class="info-value">{{ organization.accreditation_number }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="info-row">
+            {% if organization.university_affiliation %}
+            <div class="info-item">
+                <span class="info-label">University Affiliation</span>
+                <span class="info-value">{{ organization.university_affiliation }}</span>
+            </div>
+            {% endif %}
+            {% if organization.gstin %}
+            <div class="info-item">
+                <span class="info-label">GSTIN</span>
+                <span class="info-value">{{ organization.gstin }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Address Information -->
+    <div class="profile-card">
+        <h2>📍 Headquarters Address</h2>
+        
+        <div class="info-row full">
+            <div class="info-item">
+                <span class="info-label">Address</span>
+                <span class="info-value">
+                    {{ organization.headquarters_address }}<br>
+                    {{ organization.headquarters_city }}, {{ organization.headquarters_state }} {{ organization.headquarters_postal_code }}<br>
+                    {{ organization.headquarters_country }}
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="profile-card">
+        <h2>📈 Organization Statistics</h2>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ organization.total_students }}</div>
+                <div class="stat-label">Total Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ organization.total_teachers }}</div>
+                <div class="stat-label">Total Teachers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ organization.total_courses }}</div>
+                <div class="stat-label">Total Courses</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="profile-card">
+        <h2>📄 Uploaded Documents</h2>
+        
+        {% if organization.registration_certificate or organization.accreditation_certificate or organization.license %}
+            <div class="info-row">
+                {% if organization.registration_certificate %}
+                <div class="info-item">
+                    <span class="info-label">Registration Certificate</span>
+                    <a href="{{ organization.registration_certificate.url }}" style="color: #3498db; text-decoration: none; font-weight: 500;" target="_blank">📥 Download</a>
+                </div>
+                {% endif %}
+                {% if organization.accreditation_certificate %}
+                <div class="info-item">
+                    <span class="info-label">Accreditation Certificate</span>
+                    <a href="{{ organization.accreditation_certificate.url }}" style="color: #3498db; text-decoration: none; font-weight: 500;" target="_blank">📥 Download</a>
+                </div>
+                {% endif %}
+            </div>
+            {% if organization.license %}
+            <div class="info-row full" style="margin-top: 1rem;">
+                <div class="info-item">
+                    <span class="info-label">License</span>
+                    <a href="{{ organization.license.url }}" style="color: #3498db; text-decoration: none; font-weight: 500;" target="_blank">📥 Download</a>
+                </div>
+            </div>
+            {% endif %}
+        {% else %}
+            <p style="color: #bdc3c7; font-style: italic;">No documents uploaded yet</p>
+        {% endif %}
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+        <a href="{% url 'organization-profile' %}" class="btn btn-edit" style="background: #9b59b6; color: white; flex: 1;">Edit Profile</a>
+        <a href="{% url 'organization-dashboard' %}" class="btn btn-edit" style="background: #ecf0f1; color: #2c3e50; flex: 1;">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

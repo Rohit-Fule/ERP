@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Teacher Dashboard - ERP System{% endblock %}
+
+{% block content %}
+<h2>Welcome, Teacher {{ user.first_name }}!</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>Your Courses</h3>
+        <p style="font-size: 2rem; color: #3498db;">{{ total_courses }}</p>
+    </div>
+    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>Total Students</h3>
+        <p style="font-size: 2rem; color: #3498db;">{{ total_students }}</p>
+    </div>
+    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>Experience</h3>
+        <p style="font-size: 2rem; color: #3498db;">{{ teacher.experience_years }} years</p>
+    </div>
+</div>
+
+<h3>Your Courses</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Course Code</th>
+            <th>Course Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Enrolled Students</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for course in courses %}
+        <tr>
+            <td>{{ course.code }}</td>
+            <td>{{ course.title }}</td>
+            <td>{{ course.start_date }}</td>
+            <td>{{ course.end_date }}</td>
+            <td>{{ course.current_enrollment }}</td>
+            <td>{{ course.get_status_display }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No courses yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

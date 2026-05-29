@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Organization Dashboard - ERP System{% endblock %}
+
+{% block content %}
+<h2>Welcome, {{ organization.organization_name }}!</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>Total Students</h3>
+        <p style="font-size: 2rem; color: #3498db;">{{ total_students }}</p>
+    </div>
+    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>Total Teachers</h3>
+        <p style="font-size: 2rem; color: #3498db;">{{ total_teachers }}</p>
+    </div>
+    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>Total Courses</h3>
+        <p style="font-size: 2rem; color: #3498db;">{{ total_courses }}</p>
+    </div>
+</div>
+
+<h3>Organization Info</h3>
+<p><strong>Email:</strong> {{ organization.contact_email }}</p>
+<p><strong>Phone:</strong> {{ organization.contact_phone }}</p>
+<p><strong>Address:</strong> {{ organization.headquarters_address }}, {{ organization.headquarters_city }}</p>
+<p><strong>Status:</strong> {% if organization.is_verified %}<span style="color: green;">Verified</span>{% else %}<span style="color: orange;">Pending Verification</span>{% endif %}</p>
+
+<div style="margin-top: 2rem;">
+    <a href="{% url 'organization-settings' %}" style="padding: 0.5rem 1rem; background-color: #3498db; color: white; text-decoration: none; border-radius: 4px;">Edit Settings</a>
+    <a href="{% url 'organization-members' %}" style="padding: 0.5rem 1rem; background-color: #3498db; color: white; text-decoration: none; border-radius: 4px; margin-left: 0.5rem;">View Members</a>
+</div>
+{% endblock %}

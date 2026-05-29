@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+
+{% block title %}Support Team Member Profile - ERP System{% endblock %}
+
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .profile-header {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    .profile-header h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+    }
+    .profile-header p {
+        margin: 0;
+        opacity: 0.95;
+    }
+    .profile-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .profile-card h2 {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    .info-grid.full {
+        grid-template-columns: 1fr;
+    }
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+    .info-label {
+        font-weight: 600;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        margin-bottom: 0.3rem;
+    }
+    .info-value {
+        color: #2c3e50;
+        font-size: 1.1rem;
+    }
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    .btn {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(231, 76, 60, 0.3);
+    }
+    .btn-secondary {
+        background: #ecf0f1;
+        color: #2c3e50;
+    }
+    .btn-secondary:hover {
+        background: #dde3e8;
+    }
+    .empty-message {
+        color: #7f8c8d;
+        font-style: italic;
+    }
+    .document-list {
+        list-style: none;
+        padding: 0;
+    }
+    .document-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #ecf0f1;
+    }
+    .document-list li:last-child {
+        border-bottom: none;
+    }
+    .document-link {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .document-link:hover {
+        text-decoration: underline;
+    }
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        .button-group {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>🛠️ Support Team Member Profile</h1>
+        <p>{{ profile.user.first_name }} {{ profile.user.last_name }}</p>
+    </div>
+
+    <!-- Employment Information -->
+    <div class="profile-card">
+        <h2>💼 Employment Information</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Employee ID</span>
+                <span class="info-value">{{ profile.employee_id }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Role</span>
+                <span class="info-value">{{ profile.get_role_display }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Department</span>
+                <span class="info-value">{{ profile.department }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Joining Date</span>
+                <span class="info-value">{{ profile.joining_date|date:"d M Y" }}</span>
+            </div>
+            {% if profile.date_of_birth %}
+            <div class="info-item">
+                <span class="info-label">Date of Birth</span>
+                <span class="info-value">{{ profile.date_of_birth|date:"d M Y" }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Shift & Availability -->
+    <div class="profile-card">
+        <h2>⏰ Shift & Availability</h2>
+        <div class="info-grid">
+            {% if profile.shift %}
+            <div class="info-item">
+                <span class="info-label">Shift</span>
+                <span class="info-value">{{ profile.get_shift_display }}</span>
+            </div>
+            {% endif %}
+            {% if profile.languages_spoken %}
+            <div class="info-item">
+                <span class="info-label">Languages Spoken</span>
+                <span class="info-value">{{ profile.languages_spoken }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Skills & Expertise -->
+    <div class="profile-card">
+        <h2>🎯 Skills & Expertise</h2>
+        {% if profile.specialization %}
+        <div class="info-grid full">
+            <div class="info-item">
+                <span class="info-label">Specialization/Expertise</span>
+                <span class="info-value">{{ profile.specialization }}</span>
+            </div>
+        </div>
+        {% endif %}
+        {% if profile.assigned_categories %}
+        <div class="info-grid full">
+            <div class="info-item">
+                <span class="info-label">Assigned Categories</span>
+                <span class="info-value">{{ profile.assigned_categories }}</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Financial Information -->
+    <div class="profile-card">
+        <h2>💰 Financial Information</h2>
+        <div class="info-grid">
+            {% if profile.bank_account_number %}
+            <div class="info-item">
+                <span class="info-label">Bank Account</span>
+                <span class="info-value">***{{ profile.bank_account_number|slice:"-4:" }}</span>
+            </div>
+            {% endif %}
+            {% if profile.bank_name %}
+            <div class="info-item">
+                <span class="info-label">Bank Name</span>
+                <span class="info-value">{{ profile.bank_name }}</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Performance Metrics -->
+    <div class="profile-card">
+        <h2>📊 Performance Metrics</h2>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Total Tickets Handled</span>
+                <span class="info-value">{{ profile.total_tickets_handled }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Tickets Resolved</span>
+                <span class="info-value">{{ profile.total_tickets_resolved }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Average Rating</span>
+                <span class="info-value">{{ profile.average_rating }}/5.0 ⭐</span>
+            </div>
+            {% if profile.average_resolution_time %}
+            <div class="info-item">
+                <span class="info-label">Avg Resolution Time</span>
+                <span class="info-value">{{ profile.average_resolution_time }} hrs</span>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="profile-card">
+        <h2>📄 Documents</h2>
+        {% if profile.identity_proof or profile.degree_certificate or profile.certifications %}
+            {% if profile.identity_proof %}
+            <div style="margin-bottom: 1rem;">
+                <strong style="color: #2c3e50;">Identity Proof:</strong><br>
+                <a href="{{ profile.identity_proof.url }}" class="document-link" target="_blank">📥 Download</a>
+            </div>
+            {% endif %}
+            {% if profile.degree_certificate %}
+            <div style="margin-bottom: 1rem;">
+                <strong style="color: #2c3e50;">Degree Certificate:</strong><br>
+                <a href="{{ profile.degree_certificate.url }}" class="document-link" target="_blank">📥 Download</a>
+            </div>
+            {% endif %}
+            {% if profile.certifications %}
+            <div style="margin-bottom: 1rem;">
+                <strong style="color: #2c3e50;">Certifications:</strong><br>
+                <a href="{{ profile.certifications.url }}" class="document-link" target="_blank">📥 Download</a>
+            </div>
+            {% endif %}
+        {% else %}
+            <p class="empty-message">No documents uploaded yet</p>
+        {% endif %}
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="button-group">
+        <a href="{% url 'support_profile_edit' %}" class="btn btn-primary">Edit Profile</a>
+        <a href="{% url 'home' %}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

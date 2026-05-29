@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block title %}Support Profile - ERP System{% endblock %}
+
+{% block content %}
+<style>
+    .profile-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .profile-header {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    .profile-header h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+    }
+    .profile-header p {
+        margin: 0;
+        opacity: 0.95;
+    }
+    .form-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .form-section h2 {
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #f0f0f0;
+    }
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .form-row.full {
+        grid-template-columns: 1fr;
+    }
+    .form-row.triple {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+    }
+    .form-group input,
+    .form-group select {
+        padding: 0.8rem;
+        border: 2px solid #e0e0e0;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-family: inherit;
+        transition: all 0.3s ease;
+    }
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #e74c3c;
+        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+    .form-group input[type="file"] {
+        padding: 0.5rem;
+    }
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    .btn {
+        flex: 1;
+        padding: 1rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .btn-primary {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+    }
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(231, 76, 60, 0.3);
+    }
+    .btn-secondary {
+        background: #ecf0f1;
+        color: #2c3e50;
+        text-decoration: none;
+        text-align: center;
+    }
+    .btn-secondary:hover {
+        background: #dde3e8;
+    }
+    .required {
+        color: #e74c3c;
+    }
+    .help-text {
+        font-size: 0.85rem;
+        color: #7f8c8d;
+        margin-top: 0.3rem;
+    }
+    @media (max-width: 768px) {
+        .form-row,
+        .form-row.triple {
+            grid-template-columns: 1fr;
+        }
+        .button-group {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h1>🛠️ Support Profile</h1>
+        <p>{% if is_new %}Create your support team profile{% else %}Edit your profile information{% endif %}</p>
+    </div>
+
+    {% if messages %}
+        <div style="margin-bottom: 2rem;">
+            {% for message in messages %}
+                <div style="padding: 1rem; border-radius: 6px; margin-bottom: 0.5rem; background-color: {% if 'error' in message.tags %}#fee; color: #c33; border-left: 4px solid #c33;{% else %}#efe; color: #3c3; border-left: 4px solid #3c3;{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Employment Information -->
+        <div class="form-section">
+            <h2>💼 Employment Information</h2>
+            
+            <div class="form-row triple">
+                <div class="form-group">
+                    <label for="employee_id">Employee ID <span class="required">*</span></label>
+                    {{ form.employee_id }}
+                </div>
+                <div class="form-group">
+                    <label for="role">Team Role <span class="required">*</span></label>
+                    {{ form.role }}
+                </div>
+                <div class="form-group">
+                    <label for="department">Department <span class="required">*</span></label>
+                    {{ form.department }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="joining_date">Joining Date <span class="required">*</span></label>
+                    {{ form.joining_date }}
+                </div>
+                <div class="form-group">
+                    <label for="date_of_birth">Date of Birth</label>
+                    {{ form.date_of_birth }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Shift & Availability -->
+        <div class="form-section">
+            <h2>⏰ Shift & Availability</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="shift">Shift</label>
+                    {{ form.shift }}
+                </div>
+                <div class="form-group">
+                    <label for="languages_spoken">Languages Spoken</label>
+                    {{ form.languages_spoken }}
+                    <span class="help-text">e.g., English, Spanish, Hindi (comma-separated)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills & Expertise -->
+        <div class="form-section">
+            <h2>🎯 Skills & Expertise</h2>
+            
+            <div class="form-row full">
+                <div class="form-group">
+                    <label for="specialization">Specialization/Expertise</label>
+                    {{ form.specialization }}
+                </div>
+            </div>
+
+            <div class="form-row full">
+                <div class="form-group">
+                    <label for="assigned_categories">Assigned Categories</label>
+                    {{ form.assigned_categories }}
+                    <span class="help-text">e.g., Technical, Billing, Account (comma-separated)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Information -->
+        <div class="form-section">
+            <h2>💰 Financial Information</h2>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="bank_account_number">Bank Account Number</label>
+                    {{ form.bank_account_number }}
+                </div>
+                <div class="form-group">
+                    <label for="bank_name">Bank Name</label>
+                    {{ form.bank_name }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Documents Upload -->
+        <div class="form-section">
+            <h2>📄 Document Uploads</h2>
+            <p style="color: #7f8c8d; margin-bottom: 1rem;">Upload your identity and professional documents</p>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="identity_proof">Identity Proof</label>
+                    {{ form.identity_proof }}
+                    <span class="help-text">Aadhar, Passport, or PAN Card</span>
+                </div>
+                <div class="form-group">
+                    <label for="degree_certificate">Degree Certificate</label>
+                    {{ form.degree_certificate }}
+                    <span class="help-text">Educational qualification</span>
+                </div>
+            </div>
+
+            <div class="form-row full">
+                <div class="form-group">
+                    <label for="certifications">Certifications</label>
+                    {{ form.certifications }}
+                    <span class="help-text">Professional certifications (PDF)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="button-group">
+            <button type="submit" class="btn btn-primary">
+                {% if is_new %}Create Profile{% else %}Update Profile{% endif %}
+            </button>
+            <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

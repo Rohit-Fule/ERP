@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Support Dashboard - ERP System{% endblock %}
+
+{% block content %}
+<h2>Support Team Dashboard</h2>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 2rem 0;">
+    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>Open Tickets</h3>
+        <p style="font-size: 2rem; color: #e74c3c;">{{ open_tickets }}</p>
+    </div>
+    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>In Progress</h3>
+        <p style="font-size: 2rem; color: #f39c12;">{{ in_progress_tickets }}</p>
+    </div>
+    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>Resolved</h3>
+        <p style="font-size: 2rem; color: #27ae60;">{{ resolved_tickets }}</p>
+    </div>
+    <div style="background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>High Priority</h3>
+        <p style="font-size: 2rem; color: #c0392b;">{{ high_priority }}</p>
+    </div>
+</div>
+
+<h3>Your Role</h3>
+<p>{{ support_member.get_role_display }}</p>
+
+<div style="margin-top: 2rem;">
+    <a href="{% url 'support-ticket-list' %}" style="padding: 0.5rem 1rem; background-color: #3498db; color: white; text-decoration: none; border-radius: 4px;">View All Tickets</a>
+</div>
+{% endblock %}

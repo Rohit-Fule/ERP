@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - ERP Management System{% endblock %}
+
+{% block content %}
+<div style="text-align: center; margin: 3rem 0;">
+    <h1>Welcome to ERP Management System</h1>
+    <p style="font-size: 1.2rem; margin-top: 1rem;">
+        A comprehensive platform for managing educational institutions
+    </p>
+    
+    {% if not user.is_authenticated %}
+    <div style="margin-top: 2rem;">
+        <h2>Choose Your Role</h2>
+        <p>Select your role and get started:</p>
+        <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; margin-top: 2rem;">
+            <!-- Student -->
+            <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 250px;">
+                <h3 style="color: #3498db;">👨‍🎓 Student</h3>
+                <p>Enroll in courses and learn</p>
+                <div style="margin-top: 1rem;">
+                    <a href="{% url 'student-login' %}" style="display: block; margin-bottom: 0.5rem; padding: 0.5rem 1rem; background-color: #3498db; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Login</a>
+                    <a href="{% url 'student-register' %}" style="display: block; padding: 0.5rem 1rem; background-color: #2ecc71; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Register</a>
+                </div>
+            </div>
+            
+            <!-- Teacher -->
+            <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 250px;">
+                <h3 style="color: #f39c12;">👨‍🏫 Teacher</h3>
+                <p>Teach courses and manage students</p>
+                <div style="margin-top: 1rem;">
+                    <a href="{% url 'teacher-login' %}" style="display: block; margin-bottom: 0.5rem; padding: 0.5rem 1rem; background-color: #f39c12; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Login</a>
+                    <a href="{% url 'teacher-register' %}" style="display: block; padding: 0.5rem 1rem; background-color: #e67e22; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Register</a>
+                </div>
+            </div>
+            
+            <!-- Organization -->
+            <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 250px;">
+                <h3 style="color: #9b59b6;">🏢 Organization</h3>
+                <p>Manage your institution</p>
+                <div style="margin-top: 1rem;">
+                    <a href="{% url 'organization-login' %}" style="display: block; margin-bottom: 0.5rem; padding: 0.5rem 1rem; background-color: #9b59b6; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Login</a>
+                    <a href="{% url 'organization-register' %}" style="display: block; padding: 0.5rem 1rem; background-color: #8e44ad; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Register</a>
+                </div>
+            </div>
+            
+            <!-- Support -->
+            <div style="background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); width: 250px;">
+                <h3 style="color: #e74c3c;">🛠️ Support Team</h3>
+                <p>Provide customer support</p>
+                <div style="margin-top: 1rem;">
+                    <a href="{% url 'support-login' %}" style="display: block; margin-bottom: 0.5rem; padding: 0.5rem 1rem; background-color: #e74c3c; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Login</a>
+                    <a href="{% url 'support-register' %}" style="display: block; padding: 0.5rem 1rem; background-color: #c0392b; color: white; text-decoration: none; border-radius: 4px; text-align: center;">Register</a>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; padding: 1rem; background-color: #ecf0f1; border-radius: 4px;">
+            <p style="color: #34495e;">Already know your role? Use the links above to login or register directly.</p>
+        </div>
+    </div>
+    {% else %}
+    <div style="margin-top: 2rem;">
+        <h2>Welcome, {{ user.get_full_name }}!</h2>
+        <p>You are logged in as a {{ user.get_user_type_display }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
